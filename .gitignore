@@ -1,0 +1,8 @@
+
+config.json
+flaggedUsers.json
+_AdJob_DGI.ini
+CompanyConfig.json
+*.log
+*.xml
+*.json
