@@ -31,7 +31,7 @@ try {
     Enable-Mailbox -Identity $User -Alias $User -Database $MailDB -DomainController $DC -ErrorAction Stop
     Set-Mailbox -Identity $User -CustomAttribute2 $Config.CustomAttribute2 -DomainController $DC
     Set-MailboxRegionalConfiguration -Identity $User -Language "nb-no" -DateFormat "dd.MM.yyyy"`
-      -TimeFormat "HH:mm" -TimeZone "W. Europe Standard Time" -ErrorAction Stop
+      -TimeFormat "HH.mm" -TimeZone "W. Europe Standard Time" -DomainController $DC -ErrorAction Stop
   }
   else {
     Connect-Mailbox -Database $MailDB -Identity $Ident -User $User -DomainController $DC`
