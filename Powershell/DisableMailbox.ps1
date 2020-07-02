@@ -7,7 +7,6 @@ param(
   [string]$DC
 )
 
-Import-Module ".\Powershell\Logging.psm1" -Force
 Import-Module ".\Powershell\Modules\Logging.psm1" -Force
 Import-Module ".\Powershell\Modules\GetConfig.psm1" -Force
 [PSCustomObject]$Config = Get-ConfigFile

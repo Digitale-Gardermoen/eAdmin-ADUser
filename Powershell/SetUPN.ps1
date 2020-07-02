@@ -14,6 +14,6 @@ try {
   Set-ADUser -Identity $User -UserPrincipalName $address -Server $DC
 }
 catch {
-  Import-Module ".\Powershell\Logging.psm1" -Force
+  Import-Module ".\Powershell\Modules\Logging.psm1" -Force
   Add-LogContent $_
 }

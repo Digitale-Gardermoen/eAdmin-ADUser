@@ -13,8 +13,10 @@ param(
   [string]$Ident
 )
 
+Import-Module ".\Powershell\Modules\Logging.psm1" -Force
+Import-Module ".\Powershell\Modules\GetConfig.psm1" -Force
+[PSCustomObject]$Config = Get-ConfigFile
 
-Import-Module ".\Powershell\Logging.psm1" -Force
 try {
   $UserCredential = Import-Clixml -Path $Config.ExchangeCredentialsPath -ErrorAction Stop
   $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $Config.ExchangeUri -Authentication Kerberos -Credential $UserCredential -ErrorAction Stop

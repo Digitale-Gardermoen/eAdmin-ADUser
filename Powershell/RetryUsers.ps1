@@ -1,5 +1,5 @@
-Import-Module ".\Powershell\UserStorage.psm1" -Force
-Import-Module ".\Powershell\Logging.psm1" -Force
+Import-Module ".\Powershell\Modules\UserStorage.psm1" -Force
+Import-Module ".\Powershell\Modules\Logging.psm1" -Force
 
 
 $Users = Get-StoreUsers

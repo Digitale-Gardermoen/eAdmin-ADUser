@@ -7,7 +7,7 @@ param(
   [string]$DC
 )
 
-Import-Module ".\Powershell\Logging.psm1" -Force
+Import-Module ".\Powershell\Modules\Logging.psm1" -Force
 
 $depObj = Get-Content ".\Powershell\Config\Companies.json" | ConvertFrom-Json
 

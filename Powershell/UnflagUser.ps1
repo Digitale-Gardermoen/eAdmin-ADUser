@@ -18,12 +18,12 @@ try {
   $cred = Import-Clixml -Path ".\Powershell\Config\Credentials_$($env:USERNAME)_$($env:COMPUTERNAME).xml" -ErrorAction Stop
 }
 catch {
-  Import-Module ".\Powershell\ErrorHandling.psm1" -Force
+  Import-Module ".\Powershell\Modules\ErrorHandling.psm1" -Force
   New-ErrorEvent -action "unflag" -user $Username -errorObj $_
   Exit
 }
 
-Import-Module ".\Powershell\GetConfig.psm1" -Force
+Import-Module ".\Powershell\Modules\GetConfig.psm1" -Force
 [PSCustomObject]$Config = Get-ConfigFile
 $uri = "$($Config.ApiUrl)$Username"
 
@@ -35,9 +35,9 @@ try {
     -ErrorAction Stop
 }
 catch {
-  Import-Module ".\Powershell\ErrorHandling.psm1" -Force
+  Import-Module ".\Powershell\Modules\ErrorHandling.psm1" -Force
   if ($_.Exception.Response.StatusCode -eq "NotFound") {
-    Import-Module ".\Powershell\Logging.psm1" -Force
+    Import-Module ".\Powershell\Modules\Logging.psm1" -Force
     $Log = [PSCustomObject]@{
       Exception = @{
         HResult = $_.Exception.HResult
