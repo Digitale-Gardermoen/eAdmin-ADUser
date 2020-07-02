@@ -13,35 +13,23 @@ param(
   [string]$Ident
 )
 
-# This is for fixing a bug where running the Set-MailboxRegionalConfiguration CmdLet would throw an error:
-# Set-MailboxRegionalConfiguration : Operation is not valid due to the current state of the object.
-# Not entierly sure why this happens, but it seems to be related to the exhchange scripting Agent
-# and how remote exchange works.
-Add-PSSnapin Microsoft.Exchange.Management.PowerShell.E2010 -ErrorAction SilentlyContinue
-. $env:ExchangeInstallPath\bin\RemoteExchange.ps1
-Connect-ExchangeServer -Auto -AllowClobber
 
 Import-Module ".\Powershell\Logging.psm1" -Force
+try {
+  $UserCredential = Import-Clixml -Path $Config.ExchangeCredentialsPath -ErrorAction Stop
+  $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $Config.ExchangeUri -Authentication Kerberos -Credential $UserCredential -ErrorAction Stop
+  Import-PSSession $Session -DisableNameChecking -ErrorAction Stop
 
-$migrated = Get-RemoteMailbox -Identity $User
-if ($migrated) {
-  try {
+  $migrated = Get-RemoteMailbox -Identity $User
+  if ($migrated) {
     throw "The user has a migrated mailbox, the script will exit"
   }
-  catch {
-    Add-LogContent $_
-  }
-  finally {
-    Exit
-  }
-}
 
-$exist = Get-MailboxDatabase $MailDB | Get-MailboxStatistics |`
-  Where-Object { ($_.DisconnectReason -eq "Disabled") -and ($_.DisplayName -eq "$Ident") }
-
-try {
+  $exist = Get-MailboxDatabase $MailDB | Get-MailboxStatistics |`
+    Where-Object { ($_.DisconnectReason -eq "Disabled") -and ($_.DisplayName -eq "$Ident") }
   if (!$exist) {
     Enable-Mailbox -Identity $User -Alias $User -Database $MailDB -DomainController $DC -ErrorAction Stop
+    Set-Mailbox -Identity $User -CustomAttribute2 $Config.CustomAttribute2 -DomainController $DC
     Set-MailboxRegionalConfiguration -Identity $User -Language "nb-no" -DateFormat "dd.MM.yyyy"`
       -TimeFormat "HH:mm" -TimeZone "W. Europe Standard Time" -ErrorAction Stop
   }
@@ -52,4 +40,7 @@ try {
 }
 catch {
   Add-LogContent $_
+}
+finally {
+  Remove-PSSession $Session
 }
