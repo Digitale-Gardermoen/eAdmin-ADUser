@@ -9,7 +9,7 @@ param(
 
 Import-Module ".\Powershell\Modules\Logging.psm1" -Force
 
-$depObj = Get-Content ".\Powershell\Config\Companies.json" | ConvertFrom-Json
+$depObj = Get-Content ".\Powershell\Config\Companies.json" -Encoding utf8 | ConvertFrom-Json
 
 if ($User -notlike "*-*") {
   $Unit = "Unknown"
