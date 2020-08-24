@@ -36,7 +36,7 @@ try {
       -TimeFormat "HH.mm" -TimeZone "W. Europe Standard Time" -DomainController $DC -ErrorAction Stop
   }
   else {
-    Connect-Mailbox -Database $MailDB -Identity $Ident -User $User -DomainController $DC`
+    Connect-Mailbox -Database $exist.Database -Identity $exist.Identity -User $User -DomainController $DC`
       -Confirm:$false -ErrorAction Stop
   }
 }
