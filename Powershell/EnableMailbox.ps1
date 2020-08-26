@@ -17,9 +17,10 @@ Import-Module ".\Powershell\Modules\Logging.psm1" -Force
 Import-Module ".\Powershell\Modules\GetConfig.psm1" -Force
 [PSCustomObject]$Config = Get-ConfigFile
 
+$UserCredential = Import-Clixml -Path $Config.ExchangeCredentialsPath -ErrorAction Stop
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $Config.ExchangeUri -Authentication Kerberos -Credential $UserCredential -ErrorAction Stop
+
 try {
-  $UserCredential = Import-Clixml -Path $Config.ExchangeCredentialsPath -ErrorAction Stop
-  $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $Config.ExchangeUri -Authentication Kerberos -Credential $UserCredential -ErrorAction Stop
   Import-PSSession $Session -DisableNameChecking -ErrorAction Stop
 
   $migrated = Get-RemoteMailbox -Identity $User
