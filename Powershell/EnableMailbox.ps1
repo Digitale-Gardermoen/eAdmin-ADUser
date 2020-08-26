@@ -28,8 +28,14 @@ try {
     throw "The user has a migrated mailbox, the script will exit"
   }
 
-  $exist = Get-MailboxDatabase | Get-MailboxStatistics |`
-    Where-Object { ($_.DisconnectReason -eq "Disabled") -and ($_.DisplayName -eq "$Ident") }
+  $Databases = Get-MailboxDatabase
+  $exist = $false
+
+  foreach ($db in $Databases) {
+    $check = Get-MailboxStatistics -Database $db.Name | Where-Object { ($_.DisconnectReason -eq "Disabled") -and ($_.DisplayName -eq "$Ident") }
+    if ($check) { $exist = $check }
+  }
+
   if (!$exist) {
     Enable-Mailbox -Identity $User -Alias $User -Database $MailDB -DomainController $DC -ErrorAction Stop
     Set-Mailbox -Identity $User -CustomAttribute2 $Config.CustomAttribute2 -DomainController $DC
