@@ -28,6 +28,8 @@ Import-Module ".\Powershell\GetConfig.psm1" -Force
 $uri = "$($Config.ApiUrl)$Username"
 
 try {
+  # Force TLS 1.2
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
   Invoke-RestMethod `
     -uri $uri `
     -Credential $cred `
